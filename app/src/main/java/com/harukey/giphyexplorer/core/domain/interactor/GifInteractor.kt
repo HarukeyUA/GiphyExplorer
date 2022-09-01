@@ -35,4 +35,8 @@ class GifInteractor @Inject constructor(
             gifLocalDataSourceImpl.getGifPagingSource(term)
         }.flow.map { paging: PagingData<GifImageEntity> -> paging.map { it.toDomain() } }
     }
+
+    suspend fun ignoreGif(gifId: String) {
+        gifLocalDataSourceImpl.insertIgnoredGifId(gifId)
+    }
 }

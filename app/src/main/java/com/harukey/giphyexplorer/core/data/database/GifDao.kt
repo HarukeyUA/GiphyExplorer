@@ -3,6 +3,7 @@ package com.harukey.giphyexplorer.core.data.database
 import androidx.paging.PagingSource
 import androidx.room.*
 import com.harukey.giphyexplorer.core.data.entity.GifImageEntity
+import com.harukey.giphyexplorer.core.data.entity.IgnoredGifEntity
 
 @Dao
 interface GifDao {
@@ -10,7 +11,7 @@ interface GifDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(list: List<GifImageEntity>)
 
-    @Query("SELECT * FROM gif_images WHERE searchTerm = :term ORDER BY pagingOffset ASC")
+    @Query("SELECT * FROM gif_images WHERE searchTerm = :term AND id NOT IN (SELECT id FROM ignored_gifs) ORDER BY pagingOffset ASC")
     fun getGifPagingSource(term: String): PagingSource<Int, GifImageEntity>
 
     @Query("DELETE FROM gif_images WHERE searchTerm = :term")
@@ -24,4 +25,7 @@ interface GifDao {
         deleteGifsByTerm(term)
         insertAll(list)
     }
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertIgnoredId(ignored: IgnoredGifEntity)
 }

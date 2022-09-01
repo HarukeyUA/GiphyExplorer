@@ -7,6 +7,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.harukey.giphyexplorer.core.domain.interactor.GifInteractor
+import com.harukey.giphyexplorer.features.gifGrid.model.GifImageGridItemModel
 import com.harukey.giphyexplorer.features.gifGrid.model.toItemModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -46,6 +47,12 @@ class GifGridViewModel @Inject constructor(
 
     fun performSearch(searchTerm: String) {
         searchTermInputFlow.value = searchTerm
+    }
+
+    fun onGifItemLongClick(gifImage: GifImageGridItemModel) {
+        viewModelScope.launch {
+            interactor.ignoreGif(gifImage.id)
+        }
     }
 
     private companion object {

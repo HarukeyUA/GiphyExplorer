@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide
 import com.harukey.giphyexplorer.databinding.GifGridItemBinding
 import com.harukey.giphyexplorer.features.gifGrid.model.GifImageGridItemModel
 
-class GifsPagingAdapter :
+class GifsPagingAdapter(private val onItemLongClick: (GifImageGridItemModel) -> Unit) :
     PagingDataAdapter<GifImageGridItemModel, GifsPagingAdapter.GifsViewHolder>(GifImageDiffUtil()) {
 
     override fun onBindViewHolder(holder: GifsViewHolder, position: Int) {
@@ -18,14 +18,27 @@ class GifsPagingAdapter :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GifsViewHolder {
         val binding = GifGridItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return GifsViewHolder(binding)
+        return GifsViewHolder(binding, onItemLongClick)
     }
 
     class GifsViewHolder(
-        private val binding: GifGridItemBinding
+        private val binding: GifGridItemBinding,
+        private val onItemLongClick: (GifImageGridItemModel) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
+        private var currentItem: GifImageGridItemModel? = null
+
+        init {
+            binding.root.setOnLongClickListener {
+                currentItem?.also {
+                    onItemLongClick(it)
+                }
+                true
+            }
+        }
+
         fun bind(item: GifImageGridItemModel?) {
+            currentItem = item
             item?.also {
                 Glide.with(binding.gif)
                     .load(it.previewUrl)
@@ -37,11 +50,17 @@ class GifsPagingAdapter :
     }
 
     private class GifImageDiffUtil : DiffUtil.ItemCallback<GifImageGridItemModel>() {
-        override fun areItemsTheSame(oldItem: GifImageGridItemModel, newItem: GifImageGridItemModel): Boolean {
+        override fun areItemsTheSame(
+            oldItem: GifImageGridItemModel,
+            newItem: GifImageGridItemModel
+        ): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: GifImageGridItemModel, newItem: GifImageGridItemModel): Boolean {
+        override fun areContentsTheSame(
+            oldItem: GifImageGridItemModel,
+            newItem: GifImageGridItemModel
+        ): Boolean {
             return oldItem == newItem
         }
 

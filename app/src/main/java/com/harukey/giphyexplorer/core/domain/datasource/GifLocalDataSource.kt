@@ -9,4 +9,5 @@ interface GifLocalDataSource {
     suspend fun insertPage(page: List<GifImage>, term: String)
     fun getGifPagingSource(term: String): PagingSource<Int, GifImageEntity>
     suspend fun getLastItemOffset(term: String): Int
+    suspend fun insertIgnoredGifId(id: String)
 }

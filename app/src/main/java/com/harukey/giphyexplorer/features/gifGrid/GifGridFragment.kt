@@ -20,7 +20,7 @@ class GifGridFragment : Fragment(R.layout.gif_grid_fragment) {
     private val viewModel: GifGridViewModel by viewModels()
 
     private val adapter by lazy {
-        GifsPagingAdapter()
+        GifsPagingAdapter(viewModel::onGifItemLongClick)
     }
 
     private val binding by viewBinding(GifGridFragmentBinding::bind)

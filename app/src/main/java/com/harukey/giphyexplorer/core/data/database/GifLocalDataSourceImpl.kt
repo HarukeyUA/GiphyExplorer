@@ -2,6 +2,7 @@ package com.harukey.giphyexplorer.core.data.database
 
 import androidx.paging.PagingSource
 import com.harukey.giphyexplorer.core.data.entity.GifImageEntity
+import com.harukey.giphyexplorer.core.data.entity.IgnoredGifEntity
 import com.harukey.giphyexplorer.core.data.entity.toEntity
 import com.harukey.giphyexplorer.core.domain.datasource.GifLocalDataSource
 import com.harukey.giphyexplorer.core.domain.model.GifImage
@@ -27,5 +28,9 @@ class GifLocalDataSourceImpl @Inject constructor(
 
     override suspend fun getLastItemOffset(term: String): Int {
         return gifDao.getLastItemOffset(term)
+    }
+
+    override suspend fun insertIgnoredGifId(id: String) {
+        gifDao.insertIgnoredId(IgnoredGifEntity(id))
     }
 }
