@@ -2,6 +2,7 @@ package com.harukey.giphyexplorer.features.gifGrid
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -65,19 +66,30 @@ class GifGridFragment : Fragment(R.layout.gif_grid_fragment) {
             when (loadState.refresh) {
                 is LoadState.NotLoading -> {
                     binding.swipeRefresh.isRefreshing = false
+                    setPlaceholderVisibility()
                     errorSnackBar.dismiss()
                 }
                 LoadState.Loading -> {
-                    if (!binding.swipeRefresh.isRefreshing) {
-                        binding.swipeRefresh.isRefreshing = true
-                    }
+                    showRefreshIfNotShown()
                     errorSnackBar.dismiss()
+                    binding.nothingFoundText.isVisible = false
                 }
                 is LoadState.Error -> {
                     binding.swipeRefresh.isRefreshing = false
                     errorSnackBar.show()
+                    setPlaceholderVisibility()
                 }
             }
+        }
+    }
+
+    private fun setPlaceholderVisibility() {
+        binding.nothingFoundText.isVisible = adapter.itemCount == 0
+    }
+
+    private fun showRefreshIfNotShown() {
+        if (!binding.swipeRefresh.isRefreshing) {
+            binding.swipeRefresh.isRefreshing = true
         }
     }
 }
