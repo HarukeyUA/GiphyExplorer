@@ -7,9 +7,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.paging.LoadState
 import com.google.android.material.snackbar.Snackbar
-import com.harukey.giphyexplorer.features.gifGrid.list.GifsPagingAdapter
 import com.harukey.giphyexplorer.R
 import com.harukey.giphyexplorer.databinding.GifGridFragmentBinding
+import com.harukey.giphyexplorer.features.gifGrid.list.GifsPagingAdapter
 import com.harukey.giphyexplorer.utils.extensions.observe
 import com.harukey.giphyexplorer.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,7 +20,7 @@ class GifGridFragment : Fragment(R.layout.gif_grid_fragment) {
     private val viewModel: GifGridViewModel by viewModels()
 
     private val adapter by lazy {
-        GifsPagingAdapter(viewModel::onGifItemLongClick)
+        GifsPagingAdapter(viewModel::onGifItemClick, viewModel::onGifItemLongClick)
     }
 
     private val binding by viewBinding(GifGridFragmentBinding::bind)

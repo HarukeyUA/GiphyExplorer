@@ -14,7 +14,7 @@ fun GifInfoResponse.toDomain(offset: Int): GifImage? {
     return GifImage(
         id = id ?: return null,
         previewUrl = images?.previewGif?.url ?: return null,
-        fullGifUrl = images.original?.webp ?: return null,
+        fullGifUrl = images.original?.url ?: return null,
         pagingOffset = offset
     )
 }

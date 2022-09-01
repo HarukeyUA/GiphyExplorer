@@ -9,6 +9,7 @@ import androidx.paging.map
 import com.harukey.giphyexplorer.core.domain.interactor.GifInteractor
 import com.harukey.giphyexplorer.features.gifGrid.model.GifImageGridItemModel
 import com.harukey.giphyexplorer.features.gifGrid.model.toItemModel
+import com.harukey.giphyexplorer.utils.NavigationDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -18,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class GifGridViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val interactor: GifInteractor
+    private val interactor: GifInteractor,
+    private val navigationDispatcher: NavigationDispatcher
 ) : ViewModel() {
 
     private val clearList = Channel<Unit>(Channel.CONFLATED)
@@ -39,7 +41,7 @@ class GifGridViewModel @Inject constructor(
     val gifsFlow = flowOf(
         clearList.receiveAsFlow().map { PagingData.empty() },
         searchTermFlow.flatMapLatest {
-            interactor.getPaging(it)
+            interactor.getPaging(it, true)
         }.map { pagingData ->
             pagingData.map { it.toItemModel() }
         }.cachedIn(viewModelScope)
@@ -52,6 +54,17 @@ class GifGridViewModel @Inject constructor(
     fun onGifItemLongClick(gifImage: GifImageGridItemModel) {
         viewModelScope.launch {
             interactor.ignoreGif(gifImage.id)
+        }
+    }
+
+    fun onGifItemClick(gifImage: GifImageGridItemModel, position: Int) {
+        navigationDispatcher.navigate {
+            it.navigate(
+                GifGridFragmentDirections.actionGifGridFragmentToGifDetailsFragment(
+                    position,
+                    savedStateHandle[SEARCH_TERM_VALUE] ?: ""
+                )
+            )
         }
     }
 

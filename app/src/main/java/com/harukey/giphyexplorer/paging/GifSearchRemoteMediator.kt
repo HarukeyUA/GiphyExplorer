@@ -14,9 +14,14 @@ import java.io.IOException
 @OptIn(ExperimentalPagingApi::class)
 class GifSearchRemoteMediator(
     private val term: String,
+    private val initialRefresh: Boolean,
     private val remoteDataSource: GifRemoteDataSource,
     private val localDataSource: GifLocalDataSource
 ) : RemoteMediator<Int, GifImageEntity>() {
+
+    override suspend fun initialize(): InitializeAction {
+        return if (initialRefresh) InitializeAction.LAUNCH_INITIAL_REFRESH else InitializeAction.SKIP_INITIAL_REFRESH
+    }
 
     override suspend fun load(
         loadType: LoadType,

@@ -7,5 +7,24 @@
     <fragment
         android:id="@+id/gifGridFragment"
         android:name="com.harukey.giphyexplorer.features.gifGrid.GifGridFragment"
-        android:label="GifGridFragment" />
+        android:label="GifGridFragment">
+        <action
+            android:id="@+id/action_gifGridFragment_to_gifDetailsFragment"
+            app:destination="@id/gifDetailsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/gifDetailsFragment"
+        android:name="com.harukey.giphyexplorer.features.gifDetails.GifDetailsFragment"
+        android:label="GifDetailsFragment">
+        <argument
+            android:name="offset"
+            app:argType="integer" />
+        <argument
+            android:name="searchTerm"
+            app:argType="string" />
+    </fragment>
 </navigation>

@@ -20,7 +20,8 @@ class GifInteractor @Inject constructor(
 ) {
 
     fun getPaging(
-        term: String
+        term: String,
+        initialRefresh: Boolean
     ): Flow<PagingData<GifImage>> {
         return Pager(
             config = PagingConfig(
@@ -28,6 +29,7 @@ class GifInteractor @Inject constructor(
             ),
             remoteMediator = GifSearchRemoteMediator(
                 term,
+                initialRefresh,
                 gifRemoteDataSource,
                 gifLocalDataSourceImpl
             )

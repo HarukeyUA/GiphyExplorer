@@ -9,7 +9,10 @@ import com.bumptech.glide.Glide
 import com.harukey.giphyexplorer.databinding.GifGridItemBinding
 import com.harukey.giphyexplorer.features.gifGrid.model.GifImageGridItemModel
 
-class GifsPagingAdapter(private val onItemLongClick: (GifImageGridItemModel) -> Unit) :
+class GifsPagingAdapter(
+    private val onItemClick: (GifImageGridItemModel, Int) -> Unit,
+    private val onItemLongClick: (GifImageGridItemModel) -> Unit
+) :
     PagingDataAdapter<GifImageGridItemModel, GifsPagingAdapter.GifsViewHolder>(GifImageDiffUtil()) {
 
     override fun onBindViewHolder(holder: GifsViewHolder, position: Int) {
@@ -18,11 +21,12 @@ class GifsPagingAdapter(private val onItemLongClick: (GifImageGridItemModel) -> 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GifsViewHolder {
         val binding = GifGridItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return GifsViewHolder(binding, onItemLongClick)
+        return GifsViewHolder(binding, onItemClick, onItemLongClick)
     }
 
     class GifsViewHolder(
         private val binding: GifGridItemBinding,
+        private val onItemClick: (GifImageGridItemModel, Int) -> Unit,
         private val onItemLongClick: (GifImageGridItemModel) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -34,6 +38,12 @@ class GifsPagingAdapter(private val onItemLongClick: (GifImageGridItemModel) -> 
                     onItemLongClick(it)
                 }
                 true
+            }
+            binding.root.setOnClickListener {
+                currentItem?.also { item ->
+                    onItemClick(item, absoluteAdapterPosition)
+
+                }
             }
         }
 
